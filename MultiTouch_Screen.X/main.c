@@ -816,7 +816,7 @@ void touch_send(void) {
     // Report ID for multi-touch contact information reports (based on report descriptor)
     hid_report_in[0] = 0x01;	//Report ID in byte[0]
 
-    hid_report_in[T_COUNT_INDEX] = t_data.data.TD_STATUS & 0b00000111; // Number of valid contacts
+    hid_report_in[T_COUNT_INDEX] = t_data.data.TD_STATUS & 0b00001111; // Number of valid contacts
 
     // Touch point 1
     if (hid_report_in[T_COUNT_INDEX] >= 1 && (t_data.data.TOUCH1_XH >> 6) != 1)
