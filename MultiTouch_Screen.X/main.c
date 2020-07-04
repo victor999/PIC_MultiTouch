@@ -290,6 +290,9 @@ void UserInit(void)
 }//end UserInit
 
 void TouchEnable(void) {
+    
+    i2c_Init();
+    
     // Enable interrupt
     RCONbits.IPEN = 1;      // Enable interrupt priority feature
     INTCONbits.GIE = 1;     // Global interrupt enable
@@ -301,8 +304,7 @@ void TouchEnable(void) {
     INTCON3bits.INT1IP = 0;  // Interrupt 1 low priority
     INTCON3bits.INT1IF = 0;  // Clear int1 flag
     INTCON3bits.INT1IE = 1;  // Enable int1
-
-    i2c_Init();
+    
 }
 
 void TouchInterrupt(void) {
@@ -816,7 +818,7 @@ void touch_send(void) {
     // Report ID for multi-touch contact information reports (based on report descriptor)
     hid_report_in[0] = 0x01;	//Report ID in byte[0]
 
-    hid_report_in[T_COUNT_INDEX] = t_data.data.TD_STATUS & 0b00001111; // Number of valid contacts
+    hid_report_in[T_COUNT_INDEX] = t_data.data.TD_STATUS & 0b00000111; // Number of valid contacts
 
     // Touch point 1
     if (hid_report_in[T_COUNT_INDEX] >= 1 && (t_data.data.TOUCH1_XH >> 6) != 1)

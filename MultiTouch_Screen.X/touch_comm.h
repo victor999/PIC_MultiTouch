@@ -8,7 +8,7 @@
 #ifndef TOUCH_COMM_H
 #define	TOUCH_COMM_H
 
-#define I2C_TOUCH_DATA_SIZE 22
+#define I2C_TOUCH_DATA_SIZE 23
 
 typedef union {
     unsigned char raw[I2C_TOUCH_DATA_SIZE];
