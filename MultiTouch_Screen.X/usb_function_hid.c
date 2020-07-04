@@ -105,9 +105,9 @@
 
 /** INCLUDES *******************************************************/
 #include "GenericTypeDefs.h"
-#include "Compiler.h"
-#include "./USB/usb.h"
-#include "./USB/usb_function_hid.h"
+#include <Common/Compiler.h>
+#include <USB/usb.h>
+#include <USB/usb_function_hid.h>
 
 
 /** VARIABLES ******************************************************/
