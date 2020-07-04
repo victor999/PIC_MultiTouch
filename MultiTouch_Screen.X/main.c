@@ -116,13 +116,6 @@ void USBCBSendResume(void);
 void TouchEnable(void);
 void TouchInterrupt(void);
 
-#define LED1On() LATBbits.LATB7 = 1
-#define LED1Off() LATBbits.LATB7 = 0
-#define LED2On() LATCbits.LATC6 = 1
-#define LED2Off() LATCbits.LATC6 = 0
-#define LED3On() LATCbits.LATC3 = 1
-#define LED3Off() LATCbits.LATC3 = 0
-
 /** VECTOR REMAPPING ***********************************************/
 #if defined(__18CXX)
 	//On PIC18 devices, addresses 0x00, 0x08, and 0x18 are used for
@@ -177,9 +170,6 @@ BOOL send_state = 0;
 	#pragma interrupt YourHighPriorityISRCode
 	void YourHighPriorityISRCode()
 	{
-            if (UIRbits.UERRIF)
-                LED1On();
-
             // USB device interrupt
             #if defined(USB_INTERRUPT)
                 USBDeviceTasks();
@@ -236,12 +226,6 @@ void main(void)
     }//end while
 }//end main
 
-void InitLEDs(void) {
-    LATCbits.LATC3 = 0; TRISCbits.RC3 = 0;
-    LATCbits.LATC6 = 0; TRISCbits.RC6 = 0;
-    LATBbits.LATB7 = 0; TRISBbits.RB7 = 0;
-}
-
 /********************************************************************
  * Function:        static void InitializeSystem(void)
  *
@@ -257,7 +241,6 @@ void InitLEDs(void) {
 static void InitializeSystem(void)
 {
     ADCON1 |= 0x0F;                 // Default all pins to digital
-    InitLEDs();
 
     UserInit();
 
@@ -265,7 +248,7 @@ static void InitializeSystem(void)
     					//variables to known states.
 
     // Disable BOR (this was causing random reboots)
-    RCONbits.SBOREN = 0;
+    //RCONbits.SBOREN = 0;
 
 }//end InitializeSystem
 
@@ -301,6 +284,9 @@ void UserInit(void)
     DeviceIdentifier = 0x01;
     DeviceMode = MULTI_TOUCH_DIGITIZER_MODE;	//Set the device mode (ex: mouse, single-touch digitizer, multi-touch digitizer) to a default value.  Set the default in the usb_config.h file.
 
+    //Set WAKE signal to ON
+    TRISCbits.RC4 = 0;
+    LATCbits.LATC4 = 1;
 }//end UserInit
 
 void TouchEnable(void) {
@@ -513,9 +499,6 @@ void USBCBErrorHandler(void)
     // data loss occurs.  The system will typically recover
     // automatically, without the need for application firmware
     // intervention.
-
-    if (UEIR)
-        LED3On();
 }
 
 
@@ -841,55 +824,55 @@ void touch_send(void) {
     else
         hid_report_in[1] = 0;
     //First contact info in bytes 1-6
-    hid_report_in[2] = (t_data.data.TOUCH1_YH >> 4) & 0x00001111;//Contact ID
+    hid_report_in[2] = (t_data.data.TOUCH1_YH >> 4) & 0b00001111;//Contact ID
     hid_report_in[3] = t_data.data.TOUCH1_XL;                   //X-coord LSB
-    hid_report_in[4] = t_data.data.TOUCH1_XH & 0x00001111;	//X-coord MSB
+    hid_report_in[4] = t_data.data.TOUCH1_XH & 0b00001111;	//X-coord MSB
     hid_report_in[5] = t_data.data.TOUCH1_YL;			//Y-coord LSB
-    hid_report_in[6] = t_data.data.TOUCH1_YH & 0x00001111;		//Y-coord MSB
+    hid_report_in[6] = t_data.data.TOUCH1_YH & 0b00001111;		//Y-coord MSB
 
     // Touch point 2
     if (hid_report_in[T_COUNT_INDEX] >= 2 && (t_data.data.TOUCH2_XH >> 6) != 1)
         hid_report_in[7] = 1;
     else
         hid_report_in[7] = 0;
-    hid_report_in[8] = (t_data.data.TOUCH2_YH >> 4) & 0x00001111;//Contact ID
+    hid_report_in[8] = (t_data.data.TOUCH2_YH >> 4) & 0b00001111;//Contact ID
     hid_report_in[9] = t_data.data.TOUCH2_XL;                   //X-coord LSB
-    hid_report_in[10] = t_data.data.TOUCH2_XH & 0x00001111;	//X-coord MSB
+    hid_report_in[10] = t_data.data.TOUCH2_XH & 0b00001111;	//X-coord MSB
     hid_report_in[11] = t_data.data.TOUCH2_YL;			//Y-coord LSB
-    hid_report_in[12] = t_data.data.TOUCH2_YH & 0x00001111;	//Y-coord MSB
+    hid_report_in[12] = t_data.data.TOUCH2_YH & 0b00001111;	//Y-coord MSB
 
     // Touch point 3
     if (hid_report_in[T_COUNT_INDEX] >= 3 && (t_data.data.TOUCH3_XH >> 6) != 1)
         hid_report_in[13] = 1;
     else
         hid_report_in[13] = 0;
-    hid_report_in[14] = (t_data.data.TOUCH3_YH >> 4) & 0x00001111;//Contact ID
+    hid_report_in[14] = (t_data.data.TOUCH3_YH >> 4) & 0b00001111;//Contact ID
     hid_report_in[15] = t_data.data.TOUCH3_XL;                   //X-coord LSB
-    hid_report_in[16] = t_data.data.TOUCH3_XH & 0x00001111;	//X-coord MSB
+    hid_report_in[16] = t_data.data.TOUCH3_XH & 0b00001111;	//X-coord MSB
     hid_report_in[17] = t_data.data.TOUCH3_YL;			//Y-coord LSB
-    hid_report_in[18] = t_data.data.TOUCH3_YH & 0x00001111;	//Y-coord MSB
+    hid_report_in[18] = t_data.data.TOUCH3_YH & 0b00001111;	//Y-coord MSB
 
     // Touch point 4
     if (hid_report_in[T_COUNT_INDEX] >= 4 && (t_data.data.TOUCH4_XH >> 6) != 1)
         hid_report_in[19] = 1;
     else
         hid_report_in[19] = 0;
-    hid_report_in[20] = (t_data.data.TOUCH4_YH >> 4) & 0x00001111;//Contact ID
+    hid_report_in[20] = (t_data.data.TOUCH4_YH >> 4) & 0b00001111;//Contact ID
     hid_report_in[21] = t_data.data.TOUCH4_XL;                   //X-coord LSB
-    hid_report_in[22] = t_data.data.TOUCH4_XH & 0x00001111;	//X-coord MSB
+    hid_report_in[22] = t_data.data.TOUCH4_XH & 0b00001111;	//X-coord MSB
     hid_report_in[23] = t_data.data.TOUCH4_YL;			//Y-coord LSB
-    hid_report_in[24] = t_data.data.TOUCH4_YH & 0x00001111;	//Y-coord MSB
+    hid_report_in[24] = t_data.data.TOUCH4_YH & 0b00001111;	//Y-coord MSB
 
     // Touch point 5
     if (hid_report_in[T_COUNT_INDEX] >= 5 && (t_data.data.TOUCH5_XH >> 6) != 1)
         hid_report_in[25] = 1;
     else
         hid_report_in[25] = 0;
-    hid_report_in[26] = (t_data.data.TOUCH5_YH >> 4) & 0x00001111;//Contact ID
+    hid_report_in[26] = (t_data.data.TOUCH5_YH >> 4) & 0b00001111;//Contact ID
     hid_report_in[27] = t_data.data.TOUCH5_XL;                   //X-coord LSB
-    hid_report_in[28] = t_data.data.TOUCH5_XH & 0x00001111;	//X-coord MSB
+    hid_report_in[28] = t_data.data.TOUCH5_XH & 0b00001111;	//X-coord MSB
     hid_report_in[29] = t_data.data.TOUCH5_YL;			//Y-coord LSB
-    hid_report_in[30] = t_data.data.TOUCH5_YH & 0x00001111;	//Y-coord MSB
+    hid_report_in[30] = t_data.data.TOUCH5_YH & 0b00001111;	//Y-coord MSB
 
     lastTransmission = HIDTxPacket(HID_EP, (BYTE*)hid_report_in, 32);
 }

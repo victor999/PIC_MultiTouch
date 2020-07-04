@@ -12,7 +12,8 @@ void i2c_Init(void){
     SSPCON1 = 0b00101000; 	// I2C enabled, Master mode
     SSPCON2 = 0x00;
     // I2C Master mode, clock = FOSC/(4 * (SSPADD + 1))
-    SSPADD = 39;    		// 100Khz @ 16Mhz Fosc
+    SSPADD = 29;    		// 100Khz @ 12Mhz Fosc
+    //SSPADD = 39;    		// 100Khz @ 16Mhz Fosc
 
     SSPSTAT = 0b11000000; 	// Slew rate disabled
 

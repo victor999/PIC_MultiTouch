@@ -8,15 +8,11 @@
 
 touch_data t_data;
 
-#define LED2On() LATCbits.LATC6 = 1
-#define LED2Off() LATCbits.LATC6 = 0
-#define LED3On() LATCbits.LATC3 = 1
-#define LED3Off() LATCbits.LATC3 = 0
-
 /**
  * Return the number of touch points
  * @return
  */
+/*
 unsigned int touch_points(void) {
     unsigned int num_points;
 
@@ -33,6 +29,7 @@ unsigned int touch_points(void) {
 
     return num_points;
 }
+ */
 
 void touch_read(void) {
     unsigned int i;
@@ -44,10 +41,10 @@ void touch_read(void) {
     i2c_Restart();			// Restart
     i2c_Address(I2C_SLAVE, I2C_READ);	// Send slave address with read operation
 
-    for (i = 0; i < 0x1E; i++) {
+    for (i = 0; i < (I2C_TOUCH_DATA_SIZE - 1); i++) {
         t_data.raw[i] = i2c_Read(1);
     }
-    t_data.raw[0x1E] = i2c_Read(0);
+    t_data.raw[I2C_TOUCH_DATA_SIZE - 1] = i2c_Read(0);
 
    i2c_Stop();				// send Stop
 }

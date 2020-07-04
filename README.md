@@ -1,9 +1,13 @@
 PIC MultiTouch
 ==============
 
+Adaptation of the original project to 11.6 inch LCD with touch panel.
+
 USB Device firmware to use a capacitive multi-touch panel with a PIC18F14K50
 
-This project communicates with the NHD-3.5-320240MF-ATXL#-CTP-1 part from Newhaven Display. This is a 3.5 inch capacitive 5-point touch QVGA display module. The PIC microcontroller will talk to the touch panel controller over I2C, then communicate with a PC over high-speed USB.
+Chip in the touch panel is FT5x26
+
+The PIC microcontroller will talk to the touch panel controller over I2C, then communicate with a PC over high-speed USB.
 
 The touch panel firmware is a modification of Microchip's multi-touch digitizer demo code.
 
