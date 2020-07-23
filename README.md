@@ -12,3 +12,8 @@ The PIC microcontroller will talk to the touch panel controller over I2C, then c
 The touch panel firmware is a modification of Microchip's multi-touch digitizer demo code.
 
 The touch panel is configured to send interrupt signals to the PIC microcontroller, and the PIC responds by sending HID data packets through USB. The PIC should be connected to a 12 MHz crystal, and the PIC has an internal 4x PLL, bringing the system clock up to 48MHz, the required speed for USB 2.0 operation.
+
+
+You can support me and buy me a coffee here
+
+https://www.buymeacoffee.com/vitjka
